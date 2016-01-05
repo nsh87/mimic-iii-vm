@@ -34,7 +34,7 @@ do
     fi
     jobsrunning=$(( $jobsrunning+1))
     (
-    TAR_DIR=/home/vagrant/src/mimic-iii/tarballs
+    TAR_DIR=/home/vagrant/src/physionet/mimic-iii/tarballs
     DEST=$TAR_DIR/$ITEM.tar.gz 
     BASE_URL=https://physionet.org/works/MIMICIIIClinicalDatabase/files
     URL=$BASE_URL/version_1_3/$ITEM.csv.gz
