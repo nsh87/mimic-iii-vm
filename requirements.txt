@@ -1,0 +1,12 @@
+ansible==1.9.3
+ecdsa==0.13
+Jinja2==2.8
+MarkupSafe==0.23
+paramiko==1.15.2
+passlib==1.6.5
+powerline-status==2.2
+psycopg2==2.6.1
+pycrypto==2.6.1
+PyYAML==3.11
+six==1.9.0
+wheel==0.24.0
