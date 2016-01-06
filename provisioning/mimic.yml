@@ -49,7 +49,7 @@
       copy: src=import_scripts/download_mimic.sh dest={{dest}}/download_mimic.sh mode=0744
 
     - name: download mimic-iii data files
-      shell: {{dest}}/download_mimic.sh {{u}} {{p}}
+      shell: "{{dest}}/download_mimic.sh {{u}} {{p}}"
 
     - name: ensure directory to extract mimic-iii into exists
       file: path={{dest}}/unzipped state=directory mode=0755
