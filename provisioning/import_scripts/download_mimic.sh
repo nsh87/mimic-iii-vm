@@ -17,8 +17,9 @@ do
     if [ -e $DEST ]
     then
         CHECKSUM="$(md5sum $DEST | cut -d ' ' -f 1)"
-        if ! grep -Fxq "$CHECKSUM" zipped_file_checksums.txt
+        if ! grep -wq "$CHECKSUM" zipped_file_checksums.txt
         then
+            rm $DEST
             wget --user $1 --password $2 --continue --no-check-certificate -O $DEST $URL
         fi
     else

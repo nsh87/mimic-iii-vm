@@ -48,7 +48,10 @@
     - name: copy mimic-iii downloader script
       copy: src=import_scripts/download_mimic.sh dest={{dest}}/download_mimic.sh mode=0744
 
-    - name: download mimic-iii data files
+    - name: copy zipped file checksums
+      copy: src=import_scripts/zipped_file_checksums.txt dest={{dest}}/zipped_file_checksums.txt mode=0744
+
+    - name: check checksums and download incomplete mimic-iii data files
       shell: "{{dest}}/download_mimic.sh {{u}} {{p}}"
 
     - name: ensure directory to extract mimic-iii into exists
@@ -179,9 +182,6 @@
 
   - name: copy data loader
     copy: src=import_scripts/load_data.sql dest={{dest}}/load_data.sql mode=0744
-
-  - name: copy checksums
-    copy: src=import_scripts/zipped_file_checksums.txt dest={{dest}}/zipped_file_checksums.txt mode=0744
 
   - name: load mimic-iii data into postgres
     command: psql mimic -f {{dest}}/load_data.sql mimic_data_dir={{dest}}/unzipped
