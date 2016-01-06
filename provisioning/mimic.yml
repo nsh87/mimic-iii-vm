@@ -57,8 +57,15 @@
     - name: ensure directory to extract mimic-iii into exists
       file: path={{dest}}/unzipped state=directory mode=0755
 
-    - name: extract mimic-iii data files
-      shell: for f in {{dest}}/tarballs/*.csv.gz; do gzip -d -c $f > {{dest}}/unzipped/`echo $f | sed s/.gz//`; done
+    - name: copy mimic-iii extractor script
+      copy: src=import_scripts/extract_mimic.sh dest={{dest}}/extract_mimic.sh mode=0744
+
+    - name: copy unzipped file checksums
+      copy: src=import_scripts/unzipped_file_checksums.txt dest={{dest}}/unzipped_file_checksums.txt
+
+    - name: validate checksums of unzipped data and extract remaining data files
+      shell: "{{dest}}/extract_mimic.sh {{dest}}/tarballs {{dest}}/unzipped"
+      
 
 # Create privileged database user to load the data
 - hosts: all
