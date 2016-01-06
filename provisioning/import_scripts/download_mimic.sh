@@ -13,6 +13,16 @@ do
     DEST=$TAR_DIR/$ITEM.csv.gz 
     BASE_URL=https://physionet.org/works/MIMICIIIClinicalDatabase/files
     URL=$BASE_URL/version_1_3/$ITEM.csv.gz
-    wget --user $1 --password $2 --continue --no-check-certificate -O $DEST $URL
+    # If ITEM exists, get checksum and don't re-download it if checksum is valid
+    if [ -e $DEST ]
+    then
+        CHECKSUM="$(md5sum $DEST | cut -d ' ' -f 1)"
+        if ! grep -Fxq "$CHECKSUM" zipped_file_checksums.txt
+        then
+            wget --user $1 --password $2 --continue --no-check-certificate -O $DEST $URL
+        fi
+    else
+        wget --user $1 --password $2 --continue --no-check-certificate -O $DEST $URL
+    fi
     ) &
 done
