@@ -1,5 +1,5 @@
 jobsrunning=0
-maxjobs=9
+maxjobs=4
 
 for ITEM in ADMISSIONS \
             CALLOUT \
