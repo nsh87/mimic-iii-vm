@@ -1,0 +1,190 @@
+# Install PostgreSQL and load MIMIC-III data set.
+#
+# Edit hosts file with server configuration if you want to load
+# the MIMIC-III data to a server instead of a local Vagrant VM.
+#
+---
+- hosts: all
+  sudo: yes
+  gather_facts: no
+
+  tasks:
+    - name: ensure apt cache is up to date
+      apt: update_cache=yes
+    - name: ensure packages are installed
+      apt: name={{item}}
+      with_items:
+          - postgresql-9.3
+          - libpq-dev
+          - python-psycopg2
+          - unzip
+          - gzip
+
+
+- hosts: all
+  sudo: no
+  gather_facts: no
+
+  vars_prompt:
+    - name: "u"
+      prompt: "PhysioNet username"
+      private: yes
+    - name: "p"
+      prompt: "PhysioNet password"
+      private: yes
+
+  vars:
+    dest: /home/vagrant/src/physionet/mimic-iii
+    timeout: 30
+    validate: no
+
+  tasks:
+    - name: ensure directory to download mimic-iii files exists
+      file: path={{dest}} state=directory mode=0755
+
+    - name: ensure directory to download mimic-iii compressed data exists
+      file: path={{dest}}/tarballs state=directory mode=0755
+
+    - name: copy mimic-iii downloader script
+      copy: src=import_scripts/download_mimic.sh dest={{dest}}/download_mimic.sh mode=0744
+
+    - name: download mimic-iii data files
+      shell: {{dest}}/download_mimic.sh {{u}} {{p}}
+
+    - name: ensure directory to extract mimic-iii into exists
+      file: path={{dest}}/unzipped state=directory mode=0755
+
+    - name: extract mimic-iii data files
+      shell: for f in {{dest}}/tarballs/*.csv.gz; do gzip -d -c $f > {{dest}}/unzipped/`echo $f | sed s/.gz//`; done
+
+# Create privileged database user to load the data
+- hosts: all
+  sudo: yes
+  sudo_user: postgres
+  gather_facts: no
+
+  handlers:
+  - name: restart postgresql
+    service: name=postgresql state=restarted
+
+  vars:
+    dbname: mimic
+    schema: mimiciii
+    dbuser: vagrant
+    dbpassword: igMDi9RVEqaGMoi2
+
+# Step 1 - create the user and the DB
+  tasks:
+  - name: ensure postgresql is listening on all IPs
+    lineinfile: dest=/etc/postgresql/9.3/main/postgresql.conf
+                regexp="^#listen_addresses"
+                line="listen_addresses = '*'"
+                state=present
+
+  - name: ensure postgresql allows access to all hosts
+    copy:
+      dest: /etc/postgresql/9.3/main/pg_hba.conf
+      content: |
+        local    all    postgres    peer
+        local    all    all         peer
+        host     all    all         0.0.0.0/0    md5
+    notify: restart postgresql
+
+  - name: ensure the database is created
+    postgresql_db: name={{dbname}}
+
+  - name: ensure privileged user has access to database
+    postgresql_user: db={{dbname}} name={{dbuser}} password={{dbpassword}} priv=ALL encrypted=false
+
+  - name: ensure privileged user is the owner of the database
+    postgresql_db: name={{dbname}} owner={{dbuser}}
+
+  - name: ensure privileged user does not have unnecessary privilege
+    postgresql_user: name={{dbuser}} role_attr_flags=SUPERUSER,NOCREATEDB
+
+  - name: register existing schema
+    command: psql -t -d mimic -c "\dn;"
+    register: check_schema
+
+  - name: ensure schema exists
+    command: psql mimic -c 'CREATE SCHEMA IF NOT EXISTS mimiciii;'
+    when: "'mimiciii' not in check_schema.stdout"
+
+  - name: ensure postgresql search path for mimic db is set
+    command: psql mimic -c 'ALTER DATABASE {{dbname}} SET search_path TO {{schema}},public;'
+    when: "'mimiciii' not in check_schema.stdout"
+
+- hosts: all
+  sudo: yes
+  sudo_user: postgres
+  gather_facts: no
+ 
+# Create unpriveleged user to have READ access to database
+- hosts: all
+  sudo: yes
+  sudo_user: postgres
+  gather_facts: no
+  
+  vars:
+    dbname: mimic
+    dbuser: mimic
+    userpassword: oNuemmLeix9Yex7W
+    schema: mimiciii
+    
+  tasks:
+  - name: ensure unpriveleged user exists
+    postgresql_user: db={{dbname}} name={{dbuser}} password={{userpassword}} priv=CONNECT encrypted=false
+
+  - name: ensure unprivileged user has read access to the database
+    postgresql_privs: >
+      db={{dbname}}
+      privs=CONNECT
+      type=database
+      role={{dbuser}} 
+
+  - name: ensure unprivileged user has read access to the schema
+    postgresql_privs: >
+      db={{dbname}}
+      type=schema
+      objs={{schema}}
+      privs=USAGE
+      role={{dbuser}}
+
+  - name: ensure unprivileged user has read access to the schema tables
+    postgresql_privs: >
+      db={{dbname}}
+      schema={{schema}}
+      type=table
+      objs=ALL_IN_SCHEMA
+      privs=SELECT
+      role={{dbuser}}
+
+  - name: ensure unprivileged user does not have unnecessary privilege
+    postgresql_user: name={{dbuser}} role_attr_flags=NOSUPERUSER,NOCREATEDB
+
+# Load the data into the database
+- hosts: all
+  sudo_user: postgres
+  gather_facts: no
+
+  vars:
+    dest: /home/vagrant/src/physionet/mimic-iii
+
+  tasks:
+  - name: copy table creator
+    copy: src=import_scripts/create_tables.sql dest={{dest}}/create_tables.sql mode=0744
+
+  - name: create mimic-iii tables
+    command: psql mimic -f {{dest}}/create_tables.sql
+
+  - name: copy data loader
+    copy: src=import_scripts/load_data.sql dest={{dest}}/load_data.sql mode=0744
+
+  - name: load mimic-iii data into postgres
+    command: psql mimic -f {{dest}}/load_data.sql mimic_data_dir={{dest}}/unzipped
+
+  - name: copy index creator
+    copy: src=import_scripts/add_indexes.sql dest={{dest}}/add_indexes.sql mode=0744
+
+  - name: create indexes
+    command: psql mimic -f {{dest}}/add_indexes.sql
