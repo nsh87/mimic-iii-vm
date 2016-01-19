@@ -44,6 +44,9 @@ If at any point provisioning is interrupted, you can re-provision the VM with
 downloads from where they left off, but all data will be erased and reloaded
 into Postgres.
 
+Log files will be created throughout the provisioning process. If you would
+like to monitor these logs, they will be located in this repo.
+
 ## Connecting to the Database
 While the VM is booted, local port 2345 is forwarded to the guest VM port
 5432 (Postgres server's default listening port). Therefore, generally
