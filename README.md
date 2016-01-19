@@ -45,7 +45,8 @@ downloads from where they left off, but all data will be erased and reloaded
 into Postgres.
 
 Log files will be created throughout the provisioning process. If you would
-like to monitor these logs, they will be located in this repo.
+like to monitor these logs, they will be located in the folder for this repo
+(on your host machine).
 
 ## Connecting to the Database
 While the VM is booted, local port 2345 is forwarded to the guest VM port
