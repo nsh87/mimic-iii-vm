@@ -8,6 +8,9 @@
   sudo: yes
   gather_facts: no
 
+  vars:
+    dest: /home/vagrant/src/physionet/mimic-iii
+
   tasks:
     - name: ensure apt cache is up to date
       apt: update_cache=yes
@@ -17,8 +20,13 @@
           - postgresql-9.3
           - libpq-dev
           - python-psycopg2
-          - unzip
           - gzip
+
+    - name: ensure directory to download mimic-iii files exists
+      file: path={{dest}} state=directory mode=0755 owner=vagrant group=vagrant 
+
+    - name: ensure directory to store database exists
+      file: path={{dest}}/db state=directory mode=0755 owner=postgres group=postgres
 
 
 - hosts: all
@@ -39,9 +47,6 @@
     validate: no
 
   tasks:
-    - name: ensure directory to download mimic-iii files exists
-      file: path={{dest}} state=directory mode=0755
-
     - name: ensure directory to download mimic-iii compressed data exists
       file: path={{dest}}/tarballs state=directory mode=0755
 
@@ -100,6 +105,12 @@
         host     all    all         0.0.0.0/0    md5
     notify: restart postgresql
 
+  - name: drop pre-existing database if it exists
+    command: psql postgres -c "DROP DATABASE IF EXISTS mimic;"
+
+  - name: dropping pre-existing tablespace if it exists
+    command: psql postgres -c "DROP TABLESPACE IF EXISTS mimic3v3;"
+
   - name: ensure the database is created
     postgresql_db: name={{dbname}}
 
@@ -140,8 +151,15 @@
     dbuser: mimic
     userpassword: oNuemmLeix9Yex7W
     schema: mimiciii
+    dest: /home/vagrant/src/physionet/mimic-iii
     
   tasks:
+  - name: create new tablespace
+    command: psql mimic -c "CREATE TABLESPACE mimic3v3 OWNER vagrant LOCATION '{{dest}}/db';"
+
+  - name: move database to newly created tablespace
+    command: psql postgres -c "ALTER DATABASE mimic SET TABLESPACE mimic3v3;"
+
   - name: ensure unpriveleged user exists
     postgresql_user: db={{dbname}} name={{dbuser}} password={{userpassword}} priv=CONNECT encrypted=false
 
