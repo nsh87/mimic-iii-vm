@@ -14,7 +14,7 @@ recommended to update to the latest versions if they are already installed.
 Ansible is used to provision the Vagrant VM, and since Windows machines
 cannot currently be Ansible controllers this will not work on Windows.
 
-System Requirements: 3GB RAM and 90GB Free HD Space 
+System Requirements: 3GB RAM and 90GB Free HD Space.
 
 ## VM Provisioning (a.k.a. Installation)
 Clone the repo and create a virtualenv using the supplied `requirements.txt`. 
@@ -97,7 +97,7 @@ password).
 Below are some commands you can run in the *psql* client:
 
 #### List the tables
-You can list the tables, which are within the `mimic2v26` schema with
+You can list the tables, which are within the `mimiciii` schema with
 
 ```psql
 \dt mimiciii*
