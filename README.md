@@ -131,7 +131,7 @@ Above, `*` can also be replaced with a single column name.
 
 #### -- DANGER COMMANDS --
 
-You can "reset" your database to load the data again if needed:
+You can "reset" your database by deleting the schema:
 
 ```bash
 drop schema mimiciii cascade;  # drop all tables in the schema. you need
