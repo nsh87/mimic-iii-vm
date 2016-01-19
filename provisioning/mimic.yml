@@ -193,6 +193,14 @@
   - name: load mimic-iii data into postgres
     shell: "{{dest}}/load_data.sh {{dest}}/unzipped"
 
+  - name: copy data validator
+    copy: src=import_scripts/validate_load.sh dest={{dest}}/validate_load.sh mode=0744
+
+  - name: copy expected row counts
+    copy: src=import_scripts/expected_row_counts.txt dest={{dest}}/expected_row_counts.txt
+
+  - name: validate that all tables loaded correctly
+    shell: "{{dest}}/validate_load.sh {{dest}}/expected_row_counts.txt"
 
   - name: copy index creator
     copy: src=import_scripts/add_indexes.sql dest={{dest}}/add_indexes.sql mode=0744
