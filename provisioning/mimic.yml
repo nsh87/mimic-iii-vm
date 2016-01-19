@@ -188,10 +188,11 @@
     command: psql mimic -f {{dest}}/create_tables.sql
 
   - name: copy data loader
-    copy: src=import_scripts/load_data.sql dest={{dest}}/load_data.sql mode=0744
+    copy: src=import_scripts/load_data.sh dest={{dest}}/load_data.sh mode=0744
 
   - name: load mimic-iii data into postgres
-    command: psql mimic -f {{dest}}/load_data.sql mimic_data_dir={{dest}}/unzipped
+    shell: "{{dest}}/load_data.sh {{dest}}/unzipped"
+
 
   - name: copy index creator
     copy: src=import_scripts/add_indexes.sql dest={{dest}}/add_indexes.sql mode=0744
