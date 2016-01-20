@@ -12,7 +12,10 @@ You will need to have [Vagrant](https://www.vagrantup.com/downloads.html) and
 [VirtualBox](https://www.virtualbox.org/wiki/Downloads) installed. It is
 recommended to update to the latest versions if they are already installed.
 Ansible is used to provision the Vagrant VM, and since Windows machines
-cannot currently be Ansible controllers this will not work on Windows.
+~~cannot currently~~ can be Ansible controllers
+[with some work](http://www.azavea.com/blogs/labs/2014/10/running-vagrant-with-ansible-provisioning-on-windows/)
+this ~~will not~~ should also work on Windows. A Unix machine (e.g. Linux,
+Mac OS X) is preferred.
 
 System Requirements: 3GB RAM and 90GB Free HD Space.
 
@@ -62,10 +65,11 @@ You can change these passwords by editing the file _provisioning/mimic.yml_
 prior to installation.
 
 ### GUI
-A good GUI is pgAdmin3. It is available on Mac, Windows, and Linux. You
-can find non-bundled pgAdmin3 installers for OS X and several flavors of 
-Linux after selecting a release version
-[here](http://www.postgresql.org/ftp/pgadmin3/release/).
+A good GUI is pgAdmin3. It's included in the Windows PostgreSQL
+installer, but might not be included for Mac or Linux installers. It is
+available on Mac, Windows, and Linux. You can find non-bundled pgAdmin3
+installers for Windows, OS X, and several flavors of Linux after selecting
+a release version [here](http://www.postgresql.org/ftp/pgadmin3/release/).
 
 Once installed, the settings for connecting to the database are:
 
@@ -92,6 +96,13 @@ installer, you're fine, otherwise:
     ```bash
     brew install postgres
     initdb /usr/local/var/postgres -E utf8
+    ```
+
+  * Windows: Either move `psql.exe` to your current path or specify the full
+    path to it, which is something like
+
+    ```bash
+    "%PROGRAMFILES%\Postgresql\9.2\bin\psql.exe"
     ```
 
 You can then connect with `psql -h localhost -p 2345 mimiciii mimic`. You
