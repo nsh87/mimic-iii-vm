@@ -135,11 +135,42 @@
     command: psql mimic -c 'ALTER DATABASE {{dbname}} SET search_path TO {{schema}},public;'
     when: "'mimiciii' not in check_schema.stdout"
 
+# Move database to new tablespace
+- hosts: all
+  sudo: yes
+  sudo_user: postgres
+  gather_facts: no
+  
+  vars:
+    dest: /home/vagrant/src/physionet/mimic-iii
+    
+  tasks:
+  - name: create new tablespace
+    command: psql mimic -c "CREATE TABLESPACE mimic3v3 OWNER vagrant LOCATION '{{dest}}/db';"
+
+  - name: move database to newly created tablespace
+    command: psql postgres -c "ALTER DATABASE mimic SET TABLESPACE mimic3v3;"
+
 - hosts: all
   sudo: yes
   sudo_user: postgres
   gather_facts: no
  
+# Create tables in DB
+- hosts: all
+  sudo_user: postgres
+  gather_facts: no
+
+  vars:
+    dest: /home/vagrant/src/physionet/mimic-iii
+
+  tasks:
+  - name: copy table creator
+    copy: src=import_scripts/create_tables.sql dest={{dest}}/create_tables.sql mode=0744
+
+  - name: create mimic-iii tables
+    command: psql mimic -f {{dest}}/create_tables.sql
+
 # Create unpriveleged user to have READ access to database
 - hosts: all
   sudo: yes
@@ -154,12 +185,6 @@
     dest: /home/vagrant/src/physionet/mimic-iii
     
   tasks:
-  - name: create new tablespace
-    command: psql mimic -c "CREATE TABLESPACE mimic3v3 OWNER vagrant LOCATION '{{dest}}/db';"
-
-  - name: move database to newly created tablespace
-    command: psql postgres -c "ALTER DATABASE mimic SET TABLESPACE mimic3v3;"
-
   - name: ensure unpriveleged user exists
     postgresql_user: db={{dbname}} name={{dbuser}} password={{userpassword}} priv=CONNECT encrypted=false
 
@@ -199,12 +224,6 @@
     dest: /home/vagrant/src/physionet/mimic-iii
 
   tasks:
-  - name: copy table creator
-    copy: src=import_scripts/create_tables.sql dest={{dest}}/create_tables.sql mode=0744
-
-  - name: create mimic-iii tables
-    command: psql mimic -f {{dest}}/create_tables.sql
-
   - name: copy data loader
     copy: src=import_scripts/load_data.sh dest={{dest}}/load_data.sh mode=0744
 
