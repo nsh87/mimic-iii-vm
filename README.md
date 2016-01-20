@@ -25,7 +25,7 @@ If using virtualenvwrapper, while in the repository's directory you can simply
 execute:
  
 ```bash
-mkvirtualenv mimic-ii-vm -a `pwd` -r requirements.txt
+mkvirtualenv mimic-iii-vm -a `pwd` -r requirements.txt
 ```
 
 Then run `vagrant up` to boot the VM and run the Ansible provisioner. You
