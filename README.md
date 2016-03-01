@@ -8,14 +8,41 @@ prevents collisions with data on your own computer, and the VM can easily be
 destroyed to reclaim disk space once experimentation with the data is complete.
  
 ## Requirements
-You will need to have [Vagrant](https://www.vagrantup.com/downloads.html) and
-[VirtualBox](https://www.virtualbox.org/wiki/Downloads) installed. It is
+You will need to have [Vagrant][1] and [VirtualBox][2] installed. It is
 recommended to update to the latest versions if they are already installed.
+
+The installation instructions also make use of Python's [pip][3] and Python
+virtual environments using [virtualenv][4] and [virtualenvwrapper][5].
+
+### Windows Users
 Ansible is used to provision the Vagrant VM, and since Windows machines
-~~cannot currently~~ can be Ansible controllers
-[with some work](http://www.azavea.com/blogs/labs/2014/10/running-vagrant-with-ansible-provisioning-on-windows/)
-this ~~will not~~ should also work on Windows. A Unix machine (e.g. Linux,
-Mac OS X) is preferred.
+<strike>cannot currently</strike> can be Ansible controllers [with some
+work][6] this <strike>will not</strike> should also work on Windows. A Unix
+machine (e.g. Linux, Mac OS X) is preferred since Ansible will be automatically
+installed into a virtualenv later and will work out of the box on Unix machines.
+
+### Ubuntu Users
+
+On Ubuntu, if you are using the standard Terminal you can quickly get all
+your requirements and set up virtualenvwrapper with:
+
+```bash
+sudo apt-get update
+sudo apt-get install python-pip python-dev build-essential virtualenv virtualenvwrapper vagrant virtualbox
+sudo apt-get install --upgrade pip
+# Set up virtualenvwrapper
+printf '\n%s\n%s\n%s' '# virtualenv' 'export WORKON_HOME=~/virtualenvs' \
+'source /usr/local/bin/virtualenvwrapper.sh' >> ~/.bashrc
+source ~/.bashrc
+mkdir -p $WORKON_HOME
+```
+
+[1]: (https://www.vagrantup.com/downloads.html)
+[2]: (https://www.virtualbox.org/wiki/Downloads)
+[3]: (https://pip.pypa.io/en/stable/installing/)
+[4]: (http://docs.python-guide.org/en/latest/dev/virtualenvs/)
+[5]: (http://virtualenvwrapper.readthedocs.org/en/latest/install.html)
+[6]: (http://www.azavea.com/blogs/labs/2014/10/running-vagrant-with-ansible-provisioning-on-windows/)
 
 System Requirements: 3GB RAM and 90GB Free HD Space.
 
