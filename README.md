@@ -37,12 +37,12 @@ source ~/.bashrc
 mkdir -p $WORKON_HOME
 ```
 
-[1]: (https://www.vagrantup.com/downloads.html)
-[2]: (https://www.virtualbox.org/wiki/Downloads)
-[3]: (https://pip.pypa.io/en/stable/installing/)
-[4]: (http://docs.python-guide.org/en/latest/dev/virtualenvs/)
-[5]: (http://virtualenvwrapper.readthedocs.org/en/latest/install.html)
-[6]: (http://www.azavea.com/blogs/labs/2014/10/running-vagrant-with-ansible-provisioning-on-windows/)
+[1]: https://www.vagrantup.com/downloads.html
+[2]: https://www.virtualbox.org/wiki/Downloads
+[3]: https://pip.pypa.io/en/stable/installing/
+[4]: http://docs.python-guide.org/en/latest/dev/virtualenvs/
+[5]: http://virtualenvwrapper.readthedocs.org/en/latest/install.html
+[6]: http://www.azavea.com/blogs/labs/2014/10/running-vagrant-with-ansible-provisioning-on-windows/
 
 System Requirements: 3GB RAM and 90GB Free HD Space.
 
