@@ -31,7 +31,7 @@ quickly get all your requirements and set up virtualenvwrapper with:
 
 ```bash
 sudo apt-get update
-sudo apt-get install --upgrade python-pip python-dev build-essential  virtualbox libpq-dev
+sudo apt-get install --upgrade python-pip python-dev build-essential virtualbox libpq-dev
 sudo pip install --upgrade pip virtualenv virtualenvwrapper
 # Download latest version of Vagrant (apt-get installs old version)
 wget https://releases.hashicorp.com/vagrant/1.8.1/vagrant_1.8.1_x86_64.deb
