@@ -26,13 +26,18 @@ installed into a virtualenv later and will work out of the box on Unix machines.
 
 ### Ubuntu Users
 
-On Ubuntu, if you are using the standard Terminal you can quickly get all
-your requirements and set up virtualenvwrapper with:
+On a fresh Ubuntu machine, if you are using the standard Terminal you can
+quickly get all your requirements and set up virtualenvwrapper with:
 
 ```bash
 sudo apt-get update
-sudo apt-get install python-pip python-dev build-essential virtualenv virtualenvwrapper vagrant virtualbox
-sudo apt-get install --upgrade pip
+sudo apt-get install --upgrade python-pip python-dev build-essential  virtualbox libpq-dev
+sudo pip install --upgrade pip virtualenv virtualenvwrapper
+# Download latest version of Vagrant (apt-get installs old version)
+wget https://releases.hashicorp.com/vagrant/1.8.1/vagrant_1.8.1_x86_64.deb
+sudo dpkg -i vagrant_1.8.1_x86_64.deb
+sudo apt-get install -f
+rm vagrant_1.8.1_x86_64.deb
 # Set up virtualenvwrapper
 printf '\n%s\n%s\n%s' '# virtualenv' 'export WORKON_HOME=~/virtualenvs' \
 'source /usr/local/bin/virtualenvwrapper.sh' >> ~/.bashrc
