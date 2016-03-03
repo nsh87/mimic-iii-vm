@@ -33,11 +33,7 @@ quickly get all your requirements and set up virtualenvwrapper with:
 sudo apt-get update
 sudo apt-get install --upgrade python-pip python-dev build-essential virtualbox libpq-dev
 sudo pip install --upgrade pip virtualenv virtualenvwrapper
-# Generate SSH key (for Vagrant to have SSH access to VM)
-mkdir -p $HOME/.ssh
-chmod 0700 $HOME/.ssh
-ssh-keygen -t rsa  # Press Enter at the prompts
-# Download latest version of Vagrant (apt-get installs old version)
+# Install Vagrant (apt-get installs old version)
 wget https://releases.hashicorp.com/vagrant/1.8.1/vagrant_1.8.1_x86_64.deb
 sudo dpkg -i vagrant_1.8.1_x86_64.deb
 sudo apt-get install -f
