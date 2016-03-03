@@ -38,6 +38,10 @@ wget https://releases.hashicorp.com/vagrant/1.8.1/vagrant_1.8.1_x86_64.deb
 sudo dpkg -i vagrant_1.8.1_x86_64.deb
 sudo apt-get install -f
 rm vagrant_1.8.1_x86_64.deb
+# Generate SSH key (for Vagrant to have SSH access to VM)
+mkdir -p $HOME/.ssh
+chmod 0700 $HOME/.ssh
+ssh-keygen -t rsa  # Press Enter at both prompts
 # Set up virtualenvwrapper
 printf '\n%s\n%s\n%s' '# virtualenv' 'export WORKON_HOME=~/virtualenvs' \
 'source /usr/local/bin/virtualenvwrapper.sh' >> ~/.bashrc
