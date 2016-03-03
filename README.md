@@ -19,7 +19,7 @@ virtual environments using [virtualenv][4] and [virtualenvwrapper][5].
 
 ### Windows Users
 Ansible is used to provision the Vagrant VM, and since Windows machines
-<strike>cannot currently</strike> can be Ansible controllers [with some
+<strike>cannot currently</strike> can be Ansible controllers, [with some
 work][6] this <strike>will not</strike> should also work on Windows. A Unix
 machine (e.g. Linux, Mac OS X) is preferred since Ansible will be automatically
 installed into a virtualenv later and will work out of the box on Unix machines.
