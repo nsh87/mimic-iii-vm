@@ -8,6 +8,9 @@ prevents collisions with data on your own computer, and the VM can easily be
 destroyed to reclaim disk space once experimentation with the data is complete.
  
 ## Requirements
+
+System Requirements: 3GB RAM and 90GB Free HD Space.
+
 You will need to have [Vagrant][1] and [VirtualBox][2] installed. It is
 recommended to update to the latest versions if they are already installed.
 
@@ -43,8 +46,6 @@ mkdir -p $WORKON_HOME
 [4]: http://docs.python-guide.org/en/latest/dev/virtualenvs/
 [5]: http://virtualenvwrapper.readthedocs.org/en/latest/install.html
 [6]: http://www.azavea.com/blogs/labs/2014/10/running-vagrant-with-ansible-provisioning-on-windows/
-
-System Requirements: 3GB RAM and 90GB Free HD Space.
 
 ## VM Provisioning (a.k.a. Installation)
 Clone the repo and create a virtualenv using the supplied `requirements.txt`. 
