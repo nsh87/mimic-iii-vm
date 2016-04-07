@@ -11,10 +11,10 @@ destroyed to reclaim disk space once experimentation with the data is complete.
 You will need to have [Vagrant](https://www.vagrantup.com/downloads.html) and
 [VirtualBox](https://www.virtualbox.org/wiki/Downloads) installed. It is
 recommended to update to the latest versions if they are already installed.
-Ansible is used to provision the Vagrant VM, and since Windows machines
+Ansible is used to provision the Vagrant VM. Since Windows machines
 ~~cannot currently~~ can be Ansible controllers
 [with some work](http://www.azavea.com/blogs/labs/2014/10/running-vagrant-with-ansible-provisioning-on-windows/)
-this ~~will not~~ should also work on Windows. A Unix machine (e.g. Linux,
+, this ~~will not~~ should also work on Windows. A Unix machine (e.g. Linux,
 Mac OS X) is preferred.
 
 System Requirements: 3GB RAM and 90GB Free HD Space.
