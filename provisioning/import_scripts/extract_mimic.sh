@@ -17,7 +17,7 @@ echo "Ensuring all files have been downloaded" >> $LOGFILE
 
 # Ensure you have the correct number of downloaded files
 NUM_FILES="$(ls -l $TAR_DIR | wc -l)"
-if [ "$NUM_FILES" != "26"]
+if [ "$NUM_FILES" != "26" ]
 then
     echo "Incorrect number of files ($NUM_FILES), aborting" >> $LOGFILE
     exit 1
