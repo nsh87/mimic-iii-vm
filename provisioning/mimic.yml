@@ -53,8 +53,13 @@
     - name: copy mimic-iii downloader script
       copy: src=import_scripts/download_mimic.sh dest={{dest}}/download_mimic.sh mode=0744
 
-    - name: copy zipped file checksums
-      copy: src=import_scripts/zipped_file_checksums.txt dest={{dest}}/zipped_file_checksums.txt mode=0744
+    - name: download zipped file checksums
+      get_url: >
+        url="https://physionet.org/works/MIMICIIIClinicalDatabase/files/version_1_3/checksum_md5_zipped.txt"
+        dest="{{dest}}/zipped_file_checksums.txt"
+        url_username="{{u}}"
+        url_password="{{p}}"
+        mode=0744
 
     - name: check checksums and download incomplete mimic-iii data files
       shell: "{{dest}}/download_mimic.sh {{u}} {{p}}"
@@ -65,8 +70,13 @@
     - name: copy mimic-iii extractor script
       copy: src=import_scripts/extract_mimic.sh dest={{dest}}/extract_mimic.sh mode=0744
 
-    - name: copy unzipped file checksums
-      copy: src=import_scripts/unzipped_file_checksums.txt dest={{dest}}/unzipped_file_checksums.txt
+    - name: download unzipped file checksums
+      get_url: >
+        url="https://physionet.org/works/MIMICIIIClinicalDatabase/files/version_1_3/checksum_md5_unzipped.txt"
+        dest="{{dest}}/unzipped_file_checksums.txt"
+        url_username="{{u}}"
+        url_password="{{p}}"
+        mode=0744
 
     - name: validate checksums of unzipped data and extract remaining data files
       shell: "{{dest}}/extract_mimic.sh {{dest}}/tarballs {{dest}}/unzipped"
